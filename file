@@ -9,7 +9,6 @@ from requests_html import AsyncHTMLSession
 async def parse_link(link_url, script=None):
     new_loop = asyncio.new_event_loop()
     asyncio.set_event_loop(new_loop)
-	print("first", time.time() - start)
     session = AsyncHTMLSession()
     browser = await pyppeteer.launch({
         'ignoreHTTPSErrors': True,
@@ -20,12 +19,9 @@ async def parse_link(link_url, script=None):
         'autoClose': False,
         'args': ['--no-sandbox']
     })
-	print("second after browser", time.time() - start)
     session._browser = browser
     resp_page = await session.get(link_url)
-	print("third after resp", time.time() - start)
     await resp_page.html.arender(timeout=15)
-	print("fourth after render", time.time() - start)
     bs = BeautifulSoup(resp_page.html.html, "html.parser")
     return bs
 
