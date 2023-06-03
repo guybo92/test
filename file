@@ -1,0 +1,28 @@
+import requests
+from requests_html import HTMLSession
+from bs4 import BeautifulSoup
+
+
+def parse_link(link_url):
+    session = HTMLSession()
+    response = session.get(link_url)
+    response.html.render()
+    bs = BeautifulSoup(response.html.html, "html.parser")
+    return bs
+
+
+def renuar_get_sizes(link_url):
+    available_sizes = []
+    bs = parse_link(link_url)
+    elements = bs.find("select", {"class": "custom-select form-control select-size"}).contents
+
+    for elem in elements:
+        elem_size_content = elem.text.replace('\n', '')
+        if '\n' != elem and 'בחירת מידה' not in elem_size_content and not elem.has_key('disabled'):
+            available_sizes.append(elem_size_content)
+    return available_sizes
+
+
+if __name__ == '__main__':
+    print(hoodies_get_sizes('https://www.renuar.co.il/men/clothes/shirts/423605241.html?page=men'))
+
